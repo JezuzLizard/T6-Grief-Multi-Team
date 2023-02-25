@@ -1,17 +1,17 @@
-#include mapsmpzombies_zm_utility;
-#include common_scriptsutility;
-#include mapsmpgametypes_zm_hud_util;
-#include mapsmp_utility;
-#include mapsmpzombies_zm_laststand;
-#include mapsmpzombies_zm_weap_cymbal_monkey;
-#include mapsmpzombies_zm_magicbox;
-#include mapsmpzombies_zm_game_module;
-#include mapsmpzombies_zm_equipment;
-#include mapsmpzombies_zm_weapons;
-#include mapsmpzombies_zm_audio_announcer;
-#include mapsmpzombies_zm_zonemgr;
-#include mapsmpzombies_zm;
-#include mapsmpzombies_zm_powerups;
+#include maps\mp\zombies\_zm_utility;
+#include common_scripts\utility;
+#include maps\mp\gametypes_zm\_hud_util;
+#include maps\mp\_utility;
+#include maps\mp\zombies\_zm_laststand;
+#include maps\mp\zombies\_zm_weap_cymbal_monkey;
+#include maps\mp\zombies\_zm_magicbox;
+#include maps\mp\zombies\_zm_game_module;
+#include maps\mp\zombies\_zm_equipment;
+#include maps\mp\zombies\_zm_weapons;
+#include maps\mp\zombies\_zm_audio_announcer;
+#include maps\mp\zombies\_zm_zonemgr;
+#include maps\mp\zombies\_zm;
+#include maps\mp\zombies\_zm_powerups;
 
 main()
 {
@@ -21,7 +21,7 @@ main()
 		setGametypeSetting( "teamCount", 4 );
 		precacheshellshock( "grief_stab_zm" );
 		level.game_module_onplayerconnect = ::grief_onplayerconnect;
-		level thread mapsmpgametypes_zm_zm_gametype::init();
+		level thread maps\mp\gametypes_zm\_zm_gametype::init();
 	}
 }
 
@@ -41,7 +41,7 @@ init()
 		level._game_module_player_damage_grief_callback = ::game_module_player_damage_grief_callback;
 		if ( level.script != "zm_prison" && level.script != "zm_tomb" )
 		{
-			level._effect[ "butterflies" ] = loadfx( "mapszombiefx_zmb_impact_noharm" );
+			level._effect[ "butterflies" ] = loadfx( "maps\zombie\fx_zmb_impact_noharm" );
 		}
 		level._grief_reset_message = ::grief_reset_message;
 		level.game_mode_custom_onplayerdisconnect = ::grief_onplayerdisconnect;
@@ -49,7 +49,7 @@ init()
 		level.custom_spectate_permissions = ::setspectatepermissionsgrief;
 		level._get_game_module_players = undefined;
 		level.game_mode_spawn_player_logic = ::game_mode_spawn_player_logic;
-		level._game_module_player_damage_callback = mapsmpgametypes_zm_zm_gametype::game_module_player_damage_callback;
+		level._game_module_player_damage_callback = maps\mp\gametypes_zm\_zm_gametype::game_module_player_damage_callback;
 		level.onplayerspawned_restore_previous_weapons = ::grief_laststand_weapons_return;
 		level.gamemode_post_spawn_logic = ::give_characters;
 		level thread run_on_blackscreen_passed();
@@ -112,7 +112,7 @@ wait_for_team_death_and_round_end()
 			checking_for_round_end = 0;
 			zombie_goto_round( level.round_number );
 			level thread reset_grief();
-			level thread mapsmpzombies_zm::round_think( 1 );
+			level thread maps\mp\zombies\_zm::round_think( 1 );
 		}
 		else if ( !checking_for_round_end )
 		{
@@ -160,16 +160,16 @@ check_for_round_end( winner )
 		players[ i ] freezecontrols( 1 );
 		if ( players[ i ]._encounters_team == winner )
 		{
-			players[ i ] thread mapsmpzombies_zm_audio_announcer::leaderdialogonplayer( "grief_won" );
+			players[ i ] thread maps\mp\zombies\_zm_audio_announcer::leaderdialogonplayer( "grief_won" );
 			i++;
 			continue;
 		}
-		players[ i ] thread mapsmpzombies_zm_audio_announcer::leaderdialogonplayer( "grief_lost" );
+		players[ i ] thread maps\mp\zombies\_zm_audio_announcer::leaderdialogonplayer( "grief_lost" );
 		i++;
 	}
 	level notify( "game_module_ended", winner );
 	level._game_module_game_end_check = undefined;
-	mapsmpgametypes_zm_zm_gametype::track_encounters_win_stats( level.gamemodulewinningteam );
+	maps\mp\gametypes_zm\_zm_gametype::track_encounters_win_stats( level.gamemodulewinningteam );
 	level notify( "end_game" );
 }
 
@@ -329,7 +329,7 @@ grief_reset_message()
 	{
 		player thread show_grief_hud_msg( msg );
 	}
-	level thread mapsmpzombies_zm_audio_announcer::leaderdialog( "grief_restarted" );
+	level thread maps\mp\zombies\_zm_audio_announcer::leaderdialog( "grief_restarted" );
 }
 
 show_grief_hud_msg( msg, msg_parm, offset, cleanup_end_game )
@@ -438,7 +438,7 @@ update_players_on_bleedout_or_disconnect( excluded_player )
 	}
 	if ( players_remaining == 1 )
 	{
-		level thread mapsmpzombies_zm_audio_announcer::leaderdialog( "last_player", excluded_player.team );
+		level thread maps\mp\zombies\_zm_audio_announcer::leaderdialog( "last_player", excluded_player.team );
 	}
 	if ( !isDefined( other_team ) )
 	{
@@ -446,11 +446,11 @@ update_players_on_bleedout_or_disconnect( excluded_player )
 	}
 	if ( players_remaining < 1 )
 	{
-		level thread mapsmpzombies_zm_audio_announcer::leaderdialog( "4_player_down", other_team );
+		level thread maps\mp\zombies\_zm_audio_announcer::leaderdialog( "4_player_down", other_team );
 	}
 	else
 	{
-		level thread mapsmpzombies_zm_audio_announcer::leaderdialog( players_remaining + "_player_left", other_team );
+		level thread maps\mp\zombies\_zm_audio_announcer::leaderdialog( players_remaining + "_player_left", other_team );
 	}
 }
 
@@ -528,7 +528,7 @@ grief_laststand_weapons_return()
 			i++;
 			continue;
 		}
-		self giveweapon( self.grief_savedweapon_weapons[ i ], 0, self mapsmpzombies_zm_weapons::get_pack_a_punch_weapon_options( self.grief_savedweapon_weapons[ i ] ) );
+		self giveweapon( self.grief_savedweapon_weapons[ i ], 0, self maps\mp\zombies\_zm_weapons::get_pack_a_punch_weapon_options( self.grief_savedweapon_weapons[ i ] ) );
 		if ( isdefined( self.grief_savedweapon_weaponsammo_clip[ i ] ) )
 		{
 			self setweaponammoclip( self.grief_savedweapon_weapons[ i ], self.grief_savedweapon_weaponsammo_clip[ i ] );
@@ -557,12 +557,12 @@ grief_laststand_weapons_return()
 	}
 	if ( isDefined( self.current_equipment ) )
 	{
-		self mapsmpzombies_zm_equipment::equipment_take( self.current_equipment );
+		self maps\mp\zombies\_zm_equipment::equipment_take( self.current_equipment );
 	}
 	if ( isDefined( self.grief_savedweapon_equipment ) )
 	{
 		self.do_not_display_equipment_pickup_hint = 1;
-		self mapsmpzombies_zm_equipment::equipment_give( self.grief_savedweapon_equipment );
+		self maps\mp\zombies\_zm_equipment::equipment_give( self.grief_savedweapon_equipment );
 		self.do_not_display_equipment_pickup_hint = undefined;
 	}
 	if ( isDefined( self.grief_hasriotshield ) && self.grief_hasriotshield )
